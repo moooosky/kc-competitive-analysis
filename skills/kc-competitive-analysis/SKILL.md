@@ -1,6 +1,6 @@
 ---
 name: kc-competitive-analysis
-description: Use when running China peer competitive analysis for a private company (placeholder KC) against A-share/HK listed peers with free AkShare data, producing matrix + narrative skeleton or a Canvas.
+description: Use when running China peer competitive analysis for a private company (placeholder KC) against A-share/HK listed peers with free AkShare data, producing matrix + narrative skeleton and a self-contained HTML dashboard (Grok Canvas optional).
 ---
 
 # kc-competitive-analysis
@@ -12,7 +12,7 @@ Free-tier China peer benchmarking: private company overlay (default name **KC**)
 1. **Subject company** — default label `KC`. Private financials from a local overlay file (JSON/CSV/xlsx/docx sample statements). Never invent KC numbers.
 2. **Peer list** — A-share and/or HK codes + short names. If missing, ask once or use the caller’s last peer set.
 3. **Year** — default latest full fiscal year available.
-4. **Deliverable** — markdown skeleton and/or interactive Page (Canvas). Prefer Page when the user wants charts/toggles.
+4. **Deliverable** — default: `skeleton.md` + self-contained `dashboard.html` (portable to any agent host, e.g. Workbuddy). Grok Canvas Page is an optional extra only when running inside Grok Bot and the user asks for it.
 
 ## Data sources (priority)
 
@@ -33,7 +33,11 @@ Do **not** vendor MCP server code into the analysis repo. Document optional MCP 
 4. **Build matrix** — One table: KC + peers. Columns: revenue, parent NI, OCF, assets, equity, ROE; add gross margin / SG&A rates when available. Flag HK/KC口径差异.
 5. **Narrative** — Per peer: business tag + 1–2 mix bullets; KC: role vs peers (e.g. brand / retailer / agency) from user notes only.
 6. **Competitive map** — Mode tags + “relative to KC” one-liners.
-7. **Deliver** — `examples/<slug>/skeleton.md` and optional Page (metric switch, include-HK toggle, scatter revenue×ROE). Chat: link + one-line takeaway, not the full body.
+7. **Deliver**
+   - `examples/<slug>/skeleton.md` (headings below).
+   - `examples/<slug>/dashboard.html` via `python scripts/render_html.py --data data --kc <overlay.json> --out examples/<slug>/dashboard.html --title "<title>"`. Single file, no server, ECharts from CDN with plain-table fallback if offline. Must include: KPI cards, matrix table (sortable), metric switch bar chart, include-HK toggle, revenue × ROE scatter, 口径/gaps notes. KC row shown only when overlay has numbers; nulls render as "—".
+   - Optional: Grok Canvas Page with the same content (candidate surface, not default; host-specific, not portable).
+   - Chat: file path or link + one-line takeaway, not the full body.
 8. **Gaps** — List what failed (cninfo API, missing KC fields, HK balance sheet) and next free step.
 
 ## Output skeleton headings
@@ -49,4 +53,5 @@ Do **not** vendor MCP server code into the analysis repo. Document optional MCP 
 
 - Do not publish KC figures externally or to a public MCP.
 - Do not hard-code one industry’s peers into the skill; peers come from the run.
-- Do not treat Canvas as the source of truth—repo/`data/` + overlay are.
+- Do not treat the HTML or Canvas as the source of truth—repo/`data/` + overlay are.
+- Do not make Canvas the only deliverable; HTML must always be produced so the run is portable.

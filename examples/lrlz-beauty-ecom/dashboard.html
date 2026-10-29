@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>丽人丽妆对标池 2024</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1f2328;--mute:#6b7280;--line:#e5e7eb;--acc:#2f5d8a;--neg:#b42318;--pos:#067647;--hk:#8a5a00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 48px}
+h1{font-size:22px;margin:0 0 4px}
+h2{font-size:16px;margin:28px 0 10px;padding-left:8px;border-left:3px solid var(--acc)}
+.sub{color:var(--mute);font-size:12.5px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:16px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.kpi .l{color:var(--mute);font-size:12px}.kpi .v{font-size:20px;font-weight:600;margin-top:2px}.kpi .d{color:var(--mute);font-size:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+.bar label{font-size:13px;color:var(--mute)}
+select,button{font:inherit;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.tog{display:inline-flex;gap:6px;align-items:center;cursor:pointer;user-select:none}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{padding:7px 9px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#fafbfc;text-align:right;cursor:pointer;position:sticky;top:0;font-weight:600}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+td{text-align:right;font-variant-numeric:tabular-nums}
+th.sorted-asc::after{content:" ▲";font-size:10px}th.sorted-desc::after{content:" ▼";font-size:10px}
+tr.hk td{background:#fffaf0}tr.kc td{background:#eef4fb;font-weight:600}
+.neg{color:var(--neg)}.tag{display:inline-block;font-size:11px;padding:0 5px;border-radius:4px;margin-left:4px;border:1px solid var(--line);color:var(--mute)}
+.tag.hk{color:var(--hk);border-color:#f0d9a8}.tag.kc{color:var(--acc);border-color:#bcd0e6}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.chart{height:340px}
+.fallback{display:none;color:var(--mute);font-size:13px;padding:10px;border:1px dashed var(--line);border-radius:8px}
+.segs{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.seg h3{font-size:14px;margin:0 0 6px}.seg .g{font-size:12px;color:var(--mute);margin-top:6px}
+.seg ul{margin:2px 0 0;padding-left:18px;font-size:12.5px}
+.notes li{margin:3px 0;font-size:13px}
+footer{margin-top:30px;color:var(--mute);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>丽人丽妆对标池 2024</h1>
+  <div class="sub" id="meta"></div>
+  <div class="kpis" id="kpis"></div>
+
+  <h2>财务矩阵</h2>
+  <div class="card">
+    <div class="bar">
+      <label class="tog"><input type="checkbox" id="incHK" checked> 包含港股</label>
+      <span class="sub">点击表头排序；<span class="tag hk">HK</span> 行为港股分析指标口径，<span class="tag">估</span> 为估算值。金额单位：亿元。</span>
+    </div>
+    <div class="tablewrap"><table id="matrix"><thead></thead><tbody></tbody></table></div>
+  </div>
+
+  <h2>图表</h2>
+  <div class="fallback" id="nochart">图表库（ECharts CDN）未能加载，可能处于离线环境；以上表格数据完整可用。</div>
+  <div class="grid2" id="charts">
+    <div class="card">
+      <div class="bar"><label>指标</label><select id="metric"></select></div>
+      <div class="chart" id="barChart"></div>
+    </div>
+    <div class="card">
+      <div class="bar"><label>营收（亿元）× ROE（%）</label></div>
+      <div class="chart" id="scatter"></div>
+    </div>
+  </div>
+
+  <div id="segWrap">
+    <h2>主营构成速览</h2>
+    <div class="segs" id="segs"></div>
+  </div>
+
+  <h2>口径说明与缺口</h2>
+  <div class="card notes">
+    <b>口径</b><ul id="notes"></ul>
+    <b>缺口 / 下一步</b><ul id="gaps"></ul>
+    <b>数据来源</b><ul id="sources"></ul>
+  </div>
+  <footer id="foot"></footer>
+</div>
+
+<script id="dash-data" type="application/json">{
+ "year": 2024,
+ "report_date": "2024-12-31",
+ "rows": [
+  {
+   "code": "605136",
+   "name": "丽人丽妆",
+   "market": "A",
+   "currency": "人民币",
+   "revenue": 1728185916.69,
+   "parent_ni": -24400328.98,
+   "ocf": 437522648.25,
+   "ocf_est": false,
+   "assets": 2748938027.69,
+   "equity": 2477152081.29,
+   "roe": -0.9731597331512589,
+   "gross_margin": 35.89,
+   "gm_est": false,
+   "sell_rate": 29.45,
+   "admin_rate": 6.55,
+   "sga_rate": 36.0,
+   "net_margin": -1.5165,
+   "flags": [],
+   "roe_method": "avg_equity"
+  },
+  {
+   "code": "003010",
+   "name": "若羽臣",
+   "market": "A",
+   "currency": "人民币",
+   "revenue": 1765776266.98,
+   "parent_ni": 105636160.83,
+   "ocf": 333705707.48,
+   "ocf_est": false,
+   "assets": 1550851157.65,
+   "equity": 1104191220.62,
+   "roe": 9.5976744169903,
+   "gross_margin": 44.57,
+   "gm_est": false,
+   "sell_rate": 29.78,
+   "admin_rate": 5.56,
+   "sga_rate": 35.34,
+   "net_margin": 5.9824,
+   "flags": [],
+   "roe_method": "avg_equity"
+  },
+  {
+   "code": "300792",
+   "name": "壹网壹创",
+   "market": "A",
+   "currency": "人民币",
+   "revenue": 1235809991.27,
+   "parent_ni": 75993894.23,
+   "ocf": 242852577.61,
+   "ocf_est": false,
+   "assets": 3068687017.05,
+   "equity": 2852925239.5,
+   "roe": 2.684933508273209,
+   "gross_margin": 24.81,
+   "gm_est": false,
+   "sell_rate": 11.95,
+   "admin_rate": 5.96,
+   "sga_rate": 17.91,
+   "net_margin": 6.1197,
+   "flags": [],
+   "roe_method": "avg_equity"
+  },
+  {
+   "code": "301110",
+   "name": "青木科技",
+   "market": "A",
+   "currency": "人民币",
+   "revenue": 1153155310.05,
+   "parent_ni": 90539807.86,
+   "ocf": 180245397.36,
+   "ocf_est": false,
+   "assets": 1729098415.2,
+   "equity": 1420334728.87,
+   "roe": 6.389926929846901,
+   "gross_margin": 50.13,
+   "gm_est": false,
+   "sell_rate": 24.19,
+   "admin_rate": 14.43,
+   "sga_rate": 38.62,
+   "net_margin": 7.688,
+   "flags": [],
+   "roe_method": "avg_equity"
+  },
+  {
+   "code": "300740",
+   "name": "水羊股份",
+   "market": "A",
+   "currency": "人民币",
+   "revenue": 4237228933.3,
+   "parent_ni": 109954512.78,
+   "ocf": 265655682.59,
+   "ocf_est": false,
+   "assets": 4251106914.16,
+   "equity": 2094389315.92,
+   "roe": 5.270599712116864,
+   "gross_margin": 63.01,
+   "gm_est": false,
+   "sell_rate": 49.06,
+   "admin_rate": 6.15,
+   "sga_rate": 55.21,
+   "net_margin": 2.6346,
+   "flags": [],
+   "roe_method": "avg_equity"
+  },
+  {
+   "code": "09991.HK",
+   "name": "宝尊电商-W",
+   "market": "HK",
+   "currency": "人民币",
+   "revenue": 9422229000.0,
+   "parent_ni": -185198000.0,
+   "ocf": 101278000.00001346,
+   "ocf_est": true,
+   "assets": null,
+   "equity": null,
+   "roe": -4.623462126771,
+   "gross_margin": 73.745023603226,
+   "gm_est": false,
+   "sell_rate": null,
+   "admin_rate": null,
+   "sga_rate": null,
+   "net_margin": null,
+   "flags": [
+    "港股分析指标口径",
+    "OCF=OCF/营收×营收 估算"
+   ]
+  },
+  {
+   "code": "02177.HK",
+   "name": "优趣汇控股",
+   "market": "HK",
+   "currency": "人民币",
+   "revenue": 1348400000.0,
+   "parent_ni": 37892000.0,
+   "ocf": 172187999.99999878,
+   "ocf_est": true,
+   "assets": null,
+   "equity": null,
+   "roe": 5.241861295138,
+   "gross_margin": 30.012978344704997,
+   "gm_est": false,
+   "sell_rate": null,
+   "admin_rate": null,
+   "sga_rate": null,
+   "net_margin": null,
+   "flags": [
+    "港股分析指标口径",
+    "OCF=OCF/营收×营收 估算"
+   ]
+  }
+ ],
+ "segments": {
+  "605136": {
+   "name": "丽人丽妆",
+   "period": "2024-12-31",
+   "groups": {
+    "按行业分类": [
+     {
+      "name": "天猫国内",
+      "rev_yi": 12.69,
+      "share": 0.7343,
+      "gm": 0.362
+     },
+     {
+      "name": "其他",
+      "rev_yi": 3.98,
+      "share": 0.2303,
+      "gm": 0.3567
+     },
+     {
+      "name": "天猫国际",
+      "rev_yi": 0.61,
+      "share": 0.0354,
+      "gm": 0.3101
+     }
+    ],
+    "按产品分类": [
+     {
+      "name": "美妆洗护品类",
+      "rev_yi": 16.43,
+      "share": 0.9506,
+      "gm": 0.3661
+     },
+     {
+      "name": "其他品类",
+      "rev_yi": 0.85,
+      "share": 0.0494,
+      "gm": 0.2212
+     }
+    ],
+    "按地区分类": [
+     {
+      "name": "境内",
+      "rev_yi": 16.47,
+      "share": 0.9529,
+      "gm": 0.3585
+     },
+     {
+      "name": "境外",
+      "rev_yi": 0.81,
+      "share": 0.0471,
+      "gm": 0.3687
+     }
+    ]
+   }
+  },
+  "003010": {
+   "name": "若羽臣",
+   "period": "2024-12-31",
+   "groups": {
+    "按行业分类": [
+     {
+      "name": "代运营业务",
+      "rev_yi": 7.64,
+      "share": 0.4325,
+      "gm": 0.3926
+     },
+     {
+      "name": "品牌管理业务",
+      "rev_yi": 5.01,
+      "share": 0.2838,
+      "gm": 0.3047
+     },
+     {
+      "name": "Lycocelle绽家",
+      "rev_yi": 4.84,
+      "share": 0.2742,
+      "gm": 0.6692
+     },
+     {
+      "name": "Finenutri斐萃",
+      "rev_yi": 0.12,
+      "share": 0.0069,
+      "gm": null
+     },
+     {
+      "name": "其他",
+      "rev_yi": 0.05,
+      "share": 0.0026,
+      "gm": null
+     }
+    ],
+    "按产品分类": [
+     {
+      "name": "零售收入",
+      "rev_yi": 10.07,
+      "share": 0.5706,
+      "gm": 0.5368
+     },
+     {
+      "name": "渠道分销收入",
+      "rev_yi": 5.77,
+      "share": 0.3265,
+      "gm": 0.201
+     },
+     {
+      "name": "运营服务收入",
+      "rev_yi": 1.72,
+      "share": 0.0972,
+      "gm": 0.7488
+     },
+     {
+      "name": "品牌策划服务收入",
+      "rev_yi": 0.1,
+      "share": 0.0057,
+      "gm": 0.1784
+     }
+    ],
+    "按地区分类": [
+     {
+      "name": "境内",
+      "rev_yi": 12.56,
+      "share": 0.7114,
+      "gm": 0.4776
+     },
+     {
+      "name": "境外",
+      "rev_yi": 5.1,
+      "share": 0.2886,
+      "gm": 0.3672
+     }
+    ]
+   }
+  },
+  "300792": {
+   "name": "壹网壹创",
+   "period": "2024-12-31",
+   "groups": {
+    "按行业分类": [
+     {
+      "name": "电商服务行业",
+      "rev_yi": 12.36,
+      "share": 1.0,
+      "gm": 0.248
+     }
+    ],
+    "按产品分类": [
+     {
+      "name": "线上分销服务",
+      "rev_yi": 4.68,
+      "share": 0.3787,
+      "gm": 0.1297
+     },
+     {
+      "name": "品牌线上营销服务",
+      "rev_yi": 3.83,
+      "share": 0.3095,
+      "gm": 0.3038
+     },
+     {
+      "name": "品牌线上管理服务",
+      "rev_yi": 2.66,
+      "share": 0.2151,
+      "gm": 0.3791
+     },
+     {
+      "name": "内容电商服务",
+      "rev_yi": 0.96,
+      "share": 0.0778,
+      "gm": 0.2228
+     },
+     {
+      "name": "其他(补充)",
+      "rev_yi": 0.23,
+      "share": 0.0188,
+      "gm": 0.3203
+     }
+    ],
+    "按地区分类": [
+     {
+      "name": "境内",
+      "rev_yi": 10.84,
+      "share": 0.8771,
+      "gm": 0.2455
+     },
+     {
+      "name": "境外",
+      "rev_yi": 1.52,
+      "share": 0.1229,
+      "gm": 0.2665
+     }
+    ]
+   }
+  },
+  "301110": {
+   "name": "青木科技",
+   "period": "2024-12-31",
+   "groups": {
+    "按行业分类": [
+     {
+      "name": "电商服务业",
+      "rev_yi": 11.53,
+      "share": 1.0,
+      "gm": 0.5013
+     }
+    ],
+    "按产品分类": [
+     {
+      "name": "电商代运营服务",
+      "rev_yi": 5.65,
+      "share": 0.4901,
+      "gm": 0.4095
+     },
+     {
+      "name": "品牌孵化与管理业务",
+      "rev_yi": 3.07,
+      "share": 0.2659,
+      "gm": 0.7965
+     },
+     {
+      "name": "经销代理业务",
+      "rev_yi": 1.67,
+      "share": 0.1452,
+      "gm": 0.2853
+     },
+     {
+      "name": "技术解决方案及消费者运营服务",
+      "rev_yi": 0.66,
+      "share": 0.0571,
+      "gm": 0.6933
+     },
+     {
+      "name": "品牌数字营销",
+      "rev_yi": 0.48,
+      "share": 0.0417,
+      "gm": 0.187
+     }
+    ],
+    "按地区分类": [
+     {
+      "name": "境内",
+      "rev_yi": 11.24,
+      "share": 0.9749,
+      "gm": 0.5058
+     },
+     {
+      "name": "境外",
+      "rev_yi": 0.29,
+      "share": 0.0251,
+      "gm": 0.3275
+     }
+    ]
+   }
+  },
+  "300740": {
+   "name": "水羊股份",
+   "period": "2024-12-31",
+   "groups": {
+    "按行业分类": [
+     {
+      "name": "日化行业",
+      "rev_yi": 42.37,
+      "share": 1.0,
+      "gm": 0.6301
+     }
+    ],
+    "按产品分类": [
+     {
+      "name": "水乳膏霜",
+      "rev_yi": 33.51,
+      "share": 0.791,
+      "gm": 0.6025
+     },
+     {
+      "name": "面膜",
+      "rev_yi": 7.35,
+      "share": 0.1734,
+      "gm": 0.7228
+     },
+     {
+      "name": "品牌管理服务",
+      "rev_yi": 1.02,
+      "share": 0.024,
+      "gm": null
+     },
+     {
+      "name": "其他",
+      "rev_yi": 0.49,
+      "share": 0.0116,
+      "gm": null
+     }
+    ],
+    "按地区分类": [
+     {
+      "name": "境内",
+      "rev_yi": 27.54,
+      "share": 0.6499,
+      "gm": 0.6062
+     },
+     {
+      "name": "境外",
+      "rev_yi": 14.83,
+      "share": 0.3501,
+      "gm": 0.6746
+     }
+    ]
+   }
+  }
+ },
+ "notes": [
+  "港股行（标 HK）来自 stock_financial_hk_analysis_indicator_em：经营现金流为 OCF/营收 × 营收 估算；总资产/净资产未与 A 股三表逐项对齐，暂缺；货币见各行“币种”。",
+  "港股毛利率为数据源 gross_profit_ratio，收入结构（如服务收入占比）与 A 股不同，横向比较需谨慎。",
+  "销管费用率 = 销售费用率 + 管理费用率（不含研发、财务费用），来自利润表费用 / 营业总收入。",
+  "A 股 ROE 为归母净利 / 平均归母权益；港股 ROE 为数据源 roe_avg（平均权益法）。",
+  "金额单位：亿元（原始数据单位为元，展示时 ÷1e8）；比率单位 %。"
+ ],
+ "gaps": [
+  "港股总资产/净资产未拉取，需另拉港股资产负债表对齐。",
+  "KC overlay 全为 null：填入 KC 合并口径数据（与同业同单位，元）后重跑本脚本。"
+ ],
+ "sources": [
+  "A 股三表: peer_set_2024_a.json",
+  "港股分析指标: peer_hk_2024.json",
+  "利润率: peer_margins_2024.json",
+  "费用率: peer_sga_2024.json",
+  "主营构成: peer_zygc_2024.json"
+ ],
+ "kc_status": "KC overlay 全为 null（占位样例），矩阵不显示 KC 行",
+ "has_hk": true,
+ "generated": "2026-10-29 17:11"
+}</script>
+<script>
+(function(){
+const D = JSON.parse(document.getElementById('dash-data').textContent);
+const COLS = [
+  {k:'name', t:'公司', fmt:'name'},
+  {k:'code', t:'代码', fmt:'str'},
+  {k:'revenue', t:'营收', fmt:'yi'},
+  {k:'parent_ni', t:'归母净利', fmt:'yi'},
+  {k:'ocf', t:'经营现金流', fmt:'yi'},
+  {k:'assets', t:'总资产', fmt:'yi'},
+  {k:'equity', t:'净资产', fmt:'yi'},
+  {k:'roe', t:'ROE', fmt:'pct'},
+  {k:'gross_margin', t:'毛利率', fmt:'pct'},
+  {k:'sga_rate', t:'销管费用率', fmt:'pct'},
+  {k:'sell_rate', t:'销售费用率', fmt:'pct'},
+  {k:'net_margin', t:'净利率', fmt:'pct'},
+  {k:'currency', t:'币种', fmt:'str'}
+];
+const METRICS = COLS.filter(c => c.fmt==='yi' || c.fmt==='pct').filter(c => D.rows.some(r => r[c.k]!=null));
+const DASH = '—';
+const isNum = v => typeof v === 'number' && isFinite(v);
+function fmtVal(r, c){
+  const v = r[c.k];
+  if (c.fmt==='name'){
+    let s = esc(v);
+    if (r.market==='HK') s += '<span class="tag hk">HK</span>';
+    if (r.market==='KC') s += '<span class="tag kc">KC</span>';
+    return s;
+  }
+  if (c.fmt==='str') return v==null||v==='' ? DASH : esc(v);
+  if (!isNum(v)) return DASH;
+  let s = c.fmt==='yi' ? (v/1e8).toFixed(2) : v.toFixed(1)+'%';
+  if ((c.k==='ocf' && r.ocf_est) || (c.k==='gross_margin' && r.gm_est)) s = '≈'+s+'<span class="tag">估</span>';
+  return v<0 ? '<span class="neg">'+s+'</span>' : s;
+}
+function esc(s){return String(s).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));}
+let sortKey = 'revenue', sortDir = -1;
+const incHK = document.getElementById('incHK');
+if (!D.has_hk) incHK.parentElement.style.display = 'none';
+function visRows(){ return D.rows.filter(r => incHK.checked || r.market!=='HK'); }
+
+function renderTable(){
+  const thead = document.querySelector('#matrix thead'), tbody = document.querySelector('#matrix tbody');
+  const cols = COLS.filter(c => c.fmt!=='yi' && c.fmt!=='pct' || D.rows.some(r => r[c.k]!=null));
+  thead.innerHTML = '<tr>' + cols.map(c => '<th data-k="'+c.k+'" class="'+(c.k===sortKey?(sortDir>0?'sorted-asc':'sorted-desc'):'')+'">'+c.t+'</th>').join('') + '</tr>';
+  const rows = visRows().slice().sort((a,b) => {
+    if (a.market==='KC' && b.market!=='KC') return -1; if (b.market==='KC' && a.market!=='KC') return 1;
+    const x=a[sortKey], y=b[sortKey];
+    if (x==null && y==null) return 0; if (x==null) return 1; if (y==null) return -1;
+    return (typeof x==='number' ? x-y : String(x).localeCompare(String(y),'zh')) * sortDir;
+  });
+  tbody.innerHTML = rows.map(r => '<tr class="'+(r.market==='HK'?'hk':r.market==='KC'?'kc':'')+'" title="'+esc((r.flags||[]).join('；'))+'">' +
+    cols.map(c => '<td>'+fmtVal(r,c)+'</td>').join('') + '</tr>').join('');
+  thead.querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k = th.dataset.k; if (k===sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = -1; } renderTable();
+  });
+}
+
+function median(a){ if(!a.length) return null; const s=a.slice().sort((x,y)=>x-y), m=s.length>>1; return s.length%2?s[m]:(s[m-1]+s[m])/2; }
+function renderKPIs(){
+  const rows = visRows().filter(r => r.market!=='KC');
+  const vals = k => rows.map(r => r[k]).filter(isNum);
+  const top = (k, dir) => { const rs = rows.filter(r => isNum(r[k])); if(!rs.length) return null; return rs.reduce((a,b) => (b[k]-a[k])*dir>0?b:a); };
+  const rev = vals('revenue'), roe = vals('roe'), gm = vals('gross_margin'), sga = vals('sga_rate');
+  const tRev = top('revenue',1), tRoe = top('roe',1), lossN = rows.filter(r => isNum(r.parent_ni) && r.parent_ni<0).length;
+  const cards = [
+    ['对标公司数', rows.length+' 家', (D.has_hk ? (incHK.checked?'含港股':'仅 A 股') : '仅 A 股') + (D.rows.some(r=>r.market==='KC')?'（不含 KC）':'')],
+    ['营收中位数', rev.length ? (median(rev)/1e8).toFixed(2)+' 亿' : DASH, tRev ? '最高：'+tRev.name+' '+(tRev.revenue/1e8).toFixed(2)+' 亿' : ''],
+    ['ROE 中位数', roe.length ? median(roe).toFixed(1)+'%' : DASH, tRoe ? '最高：'+tRoe.name+' '+tRoe.roe.toFixed(1)+'%' : ''],
+    ['毛利率中位数', gm.length ? median(gm).toFixed(1)+'%' : DASH, gm.length+' 家有数据'],
+    ['销管费用率中位数', sga.length ? median(sga).toFixed(1)+'%' : DASH, sga.length ? sga.length+' 家有数据（仅 A 股）' : '无费用率数据'],
+    ['归母亏损家数', lossN+' 家', '归母净利 < 0'],
+    ['KC 状态', D.rows.some(r=>r.market==='KC') ? '已载入' : '未载入', D.kc_status]
+  ];
+  document.getElementById('kpis').innerHTML = cards.map(c => '<div class="kpi"><div class="l">'+c[0]+'</div><div class="v">'+c[1]+'</div><div class="d">'+esc(c[2])+'</div></div>').join('');
+}
+
+let barC = null, scC = null;
+const metricSel = document.getElementById('metric');
+metricSel.innerHTML = METRICS.map(c => '<option value="'+c.k+'">'+c.t+(c.fmt==='yi'?'（亿元）':'（%）')+'</option>').join('');
+function renderCharts(){
+  if (!window.echarts) return;
+  const c = METRICS.find(m => m.k===metricSel.value) || METRICS[0];
+  if (!c) return;
+  const rs = visRows().filter(r => isNum(r[c.k])).sort((a,b) => b[c.k]-a[c.k]);
+  const val = r => c.fmt==='yi' ? +(r[c.k]/1e8).toFixed(2) : +r[c.k].toFixed(2);
+  const color = r => r.market==='KC' ? '#2f5d8a' : r.market==='HK' ? '#d9a441' : '#7b97b5';
+  barC = barC || echarts.init(document.getElementById('barChart'));
+  barC.setOption({
+    grid:{left:60,right:16,top:20,bottom:60},
+    tooltip:{trigger:'axis',formatter:p => p[0].name+'<br>'+c.t+'：'+p[0].value+(c.fmt==='yi'?' 亿':'%')+(((c.k==='ocf'&&rs[p[0].dataIndex].ocf_est)||(c.k==='gross_margin'&&rs[p[0].dataIndex].gm_est))?'（估）':'')},
+    xAxis:{type:'category',data:rs.map(r => r.name),axisLabel:{interval:0,rotate:rs.length>6?30:0}},
+    yAxis:{type:'value',axisLabel:{formatter:v => c.fmt==='pct'?v+'%':v}},
+    series:[{type:'bar',data:rs.map(r => ({value:val(r),itemStyle:{color:color(r)}})),label:{show:true,position:'top',fontSize:11}}]
+  }, true);
+  const ps = visRows().filter(r => isNum(r.revenue) && isNum(r.roe));
+  scC = scC || echarts.init(document.getElementById('scatter'));
+  scC.setOption({
+    grid:{left:60,right:24,top:34,bottom:50},
+    tooltip:{formatter:p => p.data[2]+'<br>营收 '+p.data[0]+' 亿<br>ROE '+p.data[1]+'%'},
+    xAxis:{type:'log',name:'营收（亿元，对数）',nameLocation:'middle',nameGap:30,scale:true},
+    yAxis:{type:'value',name:'ROE %',axisLabel:{formatter:'{value}%'}},
+    series:[{type:'scatter',symbolSize:14,
+      data:ps.map(r => ({value:[+(r.revenue/1e8).toFixed(2), +r.roe.toFixed(2), r.name], itemStyle:{color:color(r)}})),
+      label:{show:true,formatter:p => p.data.value[2],position:'right',fontSize:11},
+      markLine:{silent:true,symbol:'none',lineStyle:{type:'dashed',color:'#999'},data:[{yAxis:0}]}}]
+  }, true);
+}
+function renderSegs(){
+  const keys = Object.keys(D.segments||{});
+  if (!keys.length){ document.getElementById('segWrap').style.display='none'; return; }
+  const pct = v => isNum(v) ? (v*100).toFixed(0)+'%' : DASH;
+  document.getElementById('segs').innerHTML = keys.map(code => {
+    const s = D.segments[code];
+    const gs = Object.keys(s.groups).map(g => '<div class="g">'+esc(g)+'</div><ul>' +
+      s.groups[g].slice(0,4).map(x => '<li>'+esc(x.name)+'：'+pct(x.share)+(isNum(x.gm)?'（毛利 '+pct(x.gm)+'）':'')+(isNum(x.rev_yi)?' · '+x.rev_yi.toFixed(2)+' 亿':'')+'</li>').join('') +
+      (s.groups[g].length>4 ? '<li>…另 '+(s.groups[g].length-4)+' 项</li>' : '') + '</ul>').join('');
+    return '<div class="card seg"><h3>'+esc(s.name)+' <span class="sub">'+esc(code)+' · '+esc(s.period||'')+'</span></h3>'+gs+'</div>';
+  }).join('');
+}
+function list(id, arr){ document.getElementById(id).innerHTML = (arr&&arr.length ? arr : ['无']).map(x => '<li>'+esc(x)+'</li>').join(''); }
+
+document.getElementById('meta').textContent = '报告期：'+(D.report_date || D.year || DASH)+' · 数据：AkShare（东财/巨潮）免费层 · 仅供研究，非投资建议';
+document.getElementById('foot').textContent = '生成于 '+D.generated+' · scripts/render_html.py · 以 data/ 与 overlay 为准，本页仅为展示';
+list('notes', D.notes); list('gaps', D.gaps); list('sources', D.sources);
+function all(){ renderKPIs(); renderTable(); renderCharts(); }
+incHK.onchange = all; metricSel.onchange = renderCharts;
+renderSegs(); all();
+
+function noCharts(){ document.getElementById('charts').style.display='none'; document.getElementById('nochart').style.display='block'; }
+if (!window.echarts){
+  const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js';
+  s.onload = () => { renderCharts(); window.addEventListener('resize', () => { barC&&barC.resize(); scC&&scC.resize(); }); };
+  s.onerror = noCharts;
+  document.head.appendChild(s);
+  setTimeout(() => { if (!window.echarts) noCharts(); }, 8000);
+}
+})();
+</script>
+</body>
+</html>
