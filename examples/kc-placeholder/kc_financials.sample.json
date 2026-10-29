@@ -1,0 +1,22 @@
+{
+  "company": "KC",
+  "currency": "CNY",
+  "periods": [
+    {
+      "year": 2024,
+      "revenue": null,
+      "parent_net_profit": null,
+      "operating_cash_flow": null,
+      "total_assets": null,
+      "total_equity": null,
+      "gross_margin_pct": null,
+      "sell_expense_rate_pct": null,
+      "admin_expense_rate_pct": null,
+      "notes": "Replace nulls with KC consolidated figures (same units as peers, e.g. yuan)."
+    }
+  ],
+  "peers": {
+    "a_share": ["605136", "003010", "300792", "301110", "300740"],
+    "hk": ["09991", "02177"]
+  }
+}

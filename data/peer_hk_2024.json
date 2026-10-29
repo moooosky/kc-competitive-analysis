@@ -1,0 +1,22 @@
+{
+  "09991": {
+    "name": "宝尊电商-W",
+    "operate_income": 9422229000.0,
+    "holder_profit": -185198000.0,
+    "gross_profit_ratio": 0.73745023603226,
+    "roe_avg": -0.04623462126771,
+    "ocf_est": 101278000.00001346,
+    "ocf_sales": 0.01074883660756,
+    "currency": "人民币"
+  },
+  "02177": {
+    "name": "优趣汇控股",
+    "operate_income": 1348400000.0,
+    "holder_profit": 37892000.0,
+    "gross_profit_ratio": 0.30012978344705,
+    "roe_avg": 0.052418612951380006,
+    "ocf_est": 172187999.99999878,
+    "ocf_sales": 0.12769801245921,
+    "currency": "人民币"
+  }
+}

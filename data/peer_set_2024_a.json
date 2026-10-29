@@ -1,0 +1,174 @@
+{
+  "year": 2024,
+  "report_date": "2024-12-31",
+  "metrics": [
+    "TOTAL_ASSETS",
+    "TOTAL_OPERATE_INCOME",
+    "PARENT_NETPROFIT",
+    "NETCASH_OPERATE",
+    "TOTAL_EQUITY",
+    "ROE"
+  ],
+  "companies": [
+    {
+      "stock_code": "SH605136",
+      "company_name": "丽人丽妆",
+      "values": {
+        "TOTAL_ASSETS": 2748938027.69,
+        "TOTAL_OPERATE_INCOME": 1728185916.69,
+        "PARENT_NETPROFIT": -24400328.98,
+        "NETCASH_OPERATE": 437522648.25,
+        "TOTAL_EQUITY": 2477152081.29,
+        "ROE": -0.00973159733151259
+      },
+      "roe_method": "avg_equity",
+      "roe_equity_basis": "TOTAL_PARENT_EQUITY",
+      "fallbacks": null,
+      "ranks": {
+        "TOTAL_ASSETS": 3,
+        "TOTAL_OPERATE_INCOME": 3,
+        "PARENT_NETPROFIT": 5,
+        "NETCASH_OPERATE": 1,
+        "TOTAL_EQUITY": 2,
+        "ROE": 5
+      }
+    },
+    {
+      "stock_code": "SZ003010",
+      "company_name": "若羽臣",
+      "values": {
+        "TOTAL_ASSETS": 1550851157.65,
+        "TOTAL_OPERATE_INCOME": 1765776266.98,
+        "PARENT_NETPROFIT": 105636160.83,
+        "NETCASH_OPERATE": 333705707.48,
+        "TOTAL_EQUITY": 1104191220.62,
+        "ROE": 0.095976744169903
+      },
+      "roe_method": "avg_equity",
+      "roe_equity_basis": "TOTAL_PARENT_EQUITY",
+      "fallbacks": null,
+      "ranks": {
+        "TOTAL_ASSETS": 5,
+        "TOTAL_OPERATE_INCOME": 2,
+        "PARENT_NETPROFIT": 2,
+        "NETCASH_OPERATE": 2,
+        "TOTAL_EQUITY": 5,
+        "ROE": 1
+      }
+    },
+    {
+      "stock_code": "SZ300792",
+      "company_name": "壹网壹创",
+      "values": {
+        "TOTAL_ASSETS": 3068687017.05,
+        "TOTAL_OPERATE_INCOME": 1235809991.27,
+        "PARENT_NETPROFIT": 75993894.23,
+        "NETCASH_OPERATE": 242852577.61,
+        "TOTAL_EQUITY": 2852925239.5,
+        "ROE": 0.026849335082732087
+      },
+      "roe_method": "avg_equity",
+      "roe_equity_basis": "TOTAL_PARENT_EQUITY",
+      "fallbacks": null,
+      "ranks": {
+        "TOTAL_ASSETS": 2,
+        "TOTAL_OPERATE_INCOME": 4,
+        "PARENT_NETPROFIT": 4,
+        "NETCASH_OPERATE": 4,
+        "TOTAL_EQUITY": 1,
+        "ROE": 4
+      }
+    },
+    {
+      "stock_code": "SZ301110",
+      "company_name": "青木科技",
+      "values": {
+        "TOTAL_ASSETS": 1729098415.2,
+        "TOTAL_OPERATE_INCOME": 1153155310.05,
+        "PARENT_NETPROFIT": 90539807.86,
+        "NETCASH_OPERATE": 180245397.36,
+        "TOTAL_EQUITY": 1420334728.87,
+        "ROE": 0.06389926929846901
+      },
+      "roe_method": "avg_equity",
+      "roe_equity_basis": "TOTAL_PARENT_EQUITY",
+      "fallbacks": null,
+      "ranks": {
+        "TOTAL_ASSETS": 4,
+        "TOTAL_OPERATE_INCOME": 5,
+        "PARENT_NETPROFIT": 3,
+        "NETCASH_OPERATE": 5,
+        "TOTAL_EQUITY": 4,
+        "ROE": 2
+      }
+    },
+    {
+      "stock_code": "SZ300740",
+      "company_name": "水羊股份",
+      "values": {
+        "TOTAL_ASSETS": 4251106914.16,
+        "TOTAL_OPERATE_INCOME": 4237228933.3,
+        "PARENT_NETPROFIT": 109954512.78,
+        "NETCASH_OPERATE": 265655682.59,
+        "TOTAL_EQUITY": 2094389315.92,
+        "ROE": 0.05270599712116864
+      },
+      "roe_method": "avg_equity",
+      "roe_equity_basis": "TOTAL_PARENT_EQUITY",
+      "fallbacks": null,
+      "ranks": {
+        "TOTAL_ASSETS": 1,
+        "TOTAL_OPERATE_INCOME": 1,
+        "PARENT_NETPROFIT": 1,
+        "NETCASH_OPERATE": 3,
+        "TOTAL_EQUITY": 3,
+        "ROE": 3
+      }
+    }
+  ],
+  "summary": {
+    "TOTAL_ASSETS": {
+      "max": 4251106914.16,
+      "min": 1550851157.65,
+      "avg": 2669736306.35,
+      "std": 1095772695.3758662,
+      "count": 5
+    },
+    "TOTAL_OPERATE_INCOME": {
+      "max": 4237228933.3,
+      "min": 1153155310.05,
+      "avg": 2024031283.6580002,
+      "std": 1268087313.472356,
+      "count": 5
+    },
+    "PARENT_NETPROFIT": {
+      "max": 109954512.78,
+      "min": -24400328.98,
+      "avg": 71544809.34400001,
+      "std": 55280194.1411674,
+      "count": 5
+    },
+    "NETCASH_OPERATE": {
+      "max": 437522648.25,
+      "min": 180245397.36,
+      "avg": 291996402.658,
+      "std": 98125927.41472612,
+      "count": 5
+    },
+    "TOTAL_EQUITY": {
+      "max": 2852925239.5,
+      "min": 1104191220.62,
+      "avg": 1989798517.2400002,
+      "std": 724918919.6612519,
+      "count": 5
+    },
+    "ROE": {
+      "max": 0.095976744169903,
+      "min": -0.00973159733151259,
+      "avg": 0.04593994966815203,
+      "std": 0.03979877534019022,
+      "count": 5
+    }
+  },
+  "errors": []
+}
